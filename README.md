@@ -99,11 +99,88 @@ The type can be changed then and the probability of this is based on the absolut
 
 After that for 8% of Crystal IDs and 5% Wallet IDs, the crystal type may be replaced by a constant determined by Crystal ID or Wallet ID respectively, creating crystals that have all parts of the same type and wallets that create only one particular type of crystal part.
 
+```
+//set max available types
+int max_type = 6;
+
+//by default set crystal as random type by uniq_ID with equal probs
+i@type = floor(rand(@id_uniq*7.11)*10000) % 4;
+
+//additional 10% of corals
+if(rand(@id_uniq*17.12)<0.07) i@type = 3;
+
+//if it is a coral divide it to 3 subtypes
+if(i@type==3) i@type = 3 + (floor(rand(@id_uniq*18.68)*10000) % 3);
+
+    
+//set probability of changing type to 0
+float prob = 0;
+
+//absolute amount of nft count change
+float abs_change_nft = abs(@change_nft);
+
+//set probability of changing type base on change in nft count
+if(abs_change_nft>3 && abs_change_nft<=10) prob = 0.1;
+else if(abs_change_nft>10 && abs_change_nft<=50) prob = 0.2;
+else if(abs_change_nft>50) prob = 0.3;
+
+//if probability is met change type to 0-1-2 for positive nft change or 3-4-5 for negative
+if(rand(@id_uniq*8.66)<prob) {
+    if(@change_nft>0) i@type = floor(rand(@id_uniq*8.67)*10000) % 3;
+    else i@type = 3 + (floor(rand(@id_uniq*8.68)*10000) % 3);
+}
+
+
+//override type for rare crystals by crystal ID and wallet
+//get probabilities of constant shape crystals by crystal ID and wallet
+float const_type_crystal = chf("const_type_crystal");
+float const_type_wallet = chf("const_type_wallet");
+
+//rare crystals have constant type defined by crystal ID
+if(rand(@id_crystal*7.13)<const_type_crystal) 
+    i@type = floor(rand(@id_crystal*7.14)*10000) % max_type;
+
+//rare crystals have constant type defined by wallet
+if(rand(@id_wallet*7.15)<const_type_wallet) 
+    i@type = floor(rand(@id_wallet*7.16)*10000) % max_type;
+```
+
 <br>
 
 #### complexity_A and complexity_B
 
 Generates parameters that determine the shape/density/size of each crystal part. 20% of the parts have this parameter set to random base on the id_uniq attribute. 80% have the parameter mapped from the number of transactions made by each particular wallet.
+
+```
+// for 20% of parts set complexity to random value
+if(rand(@id_uniq*24.23)<0.2) {
+    @complexity_A = fit01(rand(@id_uniq*24.24),0,1);    
+}
+// for 80% of parts complexity is based on transaction number
+else {
+    // number of tranasctions is mapped to complexity
+    @complexity_A = fit(@transaction_num,0,250,0,1);
+    // 20% random shift added
+    @complexity_A += 0.2 * fit01(rand(@id_uniq*24.25),-1,1);
+    
+    @complexity_A = clamp(@complexity_A,0,1);
+}    
+```
+```
+// for 20% of parts set complexity to random value
+if(rand(@id_uniq*25.23)<0.2) {
+    @complexity_B = fit01(rand(@id_uniq*25.24),0,1);    
+}
+// for 80% of parts complexity is based on transaction number
+else {
+    // number of tranasctions is mapped to complexity
+    @complexity_B = fit(@transaction_num,0,250,0,1);
+    // 20% random shift added
+    @complexity_B += 0.2 * fit01(rand(@id_uniq*25.25),-1,1);
+    
+    @complexity_B = clamp(@complexity_B,0,1);
+}    
+```
 
 <br>
 
@@ -113,11 +190,47 @@ For the Gen1 part, the color is set to one chosen on minting for the whole cryst
 
 For the next generation parts in 25% crystal IDs and 5% wallet IDs the color remains the same creating constant color crystals based on crystal ID and wallet ID respectively. In all other cases, the color is selected randomly based on the id_uniq attribute.
 
+```
+float const_color_crystal = chf("const_color_crystal");
+float const_color_wallet = chf("const_color_wallet");
+
+int const_color = 0;
+
+//set pal by user choice
+//i@pal_group = chi("color_pref");
+i@pal_group = int(@crystal_color);
+
+
+// choose pal for all iterations above 0
+if(@id_iteration > 0) {
+    //constant color crystal by crystal ID and wallet ID
+    if(rand(@id_crystal*1.13)<const_color_crystal) const_color = 1;
+    if(rand(@id_wallet*1.14)<const_color_wallet) const_color = 1;
+
+    //for rare constant colors don't change the base pal, for all others make a random one
+    if(const_color==0) {
+        i@pal_group = int(rand(@id_uniq*1.15)*1000)%6;
+    }
+}
+```
+
 <br>
 
 #### pal_A 
 
 Selects color pallet files based on the color_pal_group that will be used for color sampling for the crystal primary color.
+
+```
+//select pal file based on pal_group attribute
+s@pal_A = "pal_01_red";
+if(i@pal_group==1) s@pal_A="pal_01_yellow";
+else if(i@pal_group==2) s@pal_A="pal_01_green";
+else if(i@pal_group==3) s@pal_A="pal_01_blue";
+else if(i@pal_group==4) s@pal_A="pal_01_violet";
+else if(i@pal_group==5) s@pal_A="pal_01_neutral";
+
+s@pal_A = "$HIP/pic/" + s@pal_A + ".png";
+```
 
 <br>
 
@@ -125,11 +238,59 @@ Selects color pallet files based on the color_pal_group that will be used for co
 
 Selects color pallet files for the secondary color. For 80% of crystal parts, the secondary color palette is the same as the primary one. For the rest 20% the secondary palette is selected randomly.
 
+```
+//random pal_B file based on id_uniq
+
+float seed = @id_uniq*0.143;
+int pal_group_B = floor(rand(seed*0.92)*10000)%6;
+
+string pal = "pal_01_red";
+
+if(pal_group_B==1) pal="pal_01_yellow";
+else if(pal_group_B==2) pal="pal_01_green";
+else if(pal_group_B==3) pal="pal_01_blue";
+else if(pal_group_B==4) pal="pal_01_violet";
+else if(pal_group_B==5) pal="pal_01_neutral";
+
+
+s@pal_B = "$HIP/pic/" + pal + ".png";
+
+// 80% of crystals have secondary color from the same pal
+if(rand(@id_uniq*0.144)<0.80)
+    s@pal_B = s@pal_A;
+```
+
 <br>
 
 #### shades_A_B
 
 Samples bright-mid-dark color triplets from random color sets within the selected color palette. Then creates a gradient based on these colors and then samples the primary crystal color from the random part of the gradient. Repeats the same process for the secondary color.
+
+```
+//choose random vertical position in pal for A and B colors
+float uv_A_y = rand(@id_uniq*0.111);
+float uv_B_y = rand(@id_uniq*0.112);
+
+//sample bright / med / dark colors from selected row in pal_A
+vector color_A1 = colormap(s@pal_A,set(0.25,uv_A_y,0));
+vector color_A2 = colormap(s@pal_A,set(0.50,uv_A_y,0));
+vector color_A3 = colormap(s@pal_A,set(0.75,uv_A_y,0));
+
+//sample bright / med / dark colors from selected row in pal_B
+vector color_B1 = colormap(s@pal_B,set(0.25,uv_B_y,0));
+vector color_B2 = colormap(s@pal_B,set(0.50,uv_B_y,0));
+vector color_B3 = colormap(s@pal_B,set(0.75,uv_B_y,0));
+
+//random color positions in gradients
+// main color around the center of gradient
+// second color anywhere in gradient
+float pos_A = fit01(rand(@id_uniq*0.113),0.35,0.65);
+float pos_B = fit01(rand(@id_uniq*0.114),0.00,1.00);
+
+//sample colors from gradients
+v@shade_A = lspline(pos_A,color_A1,color_A2,color_A3);
+v@shade_B = lspline(pos_B,color_B1,color_B2,color_B3);
+```
 
 <br>
 
@@ -137,11 +298,125 @@ Samples bright-mid-dark color triplets from random color sets within the selecte
 
 The chance of having the Bright trait is set to 0.1% by default. For 2% of crystal IDs and 2% of wallet IDs, the chance is changed to 99%. For the rest additional chance is added based on the change in ETH amount the wallet holds (only positive change counts) - +2% for 0.1-2.5 ETH, +4% for 2.5-10 ETH, and +12% for more than 10 ETH. The same process is applied for both primary and secondary colors.
 
+```
+// init special bright attribute to 0
+i@shade_A_bright = 0;
+
+//init the chance of special bright to 0.01%
+float prob = 0.001;
+
+//get global probabilities of special bright color by crystal ID and wallet
+float prob_bright_crystal = chf("prob_bright_crystal");
+float prob_bright_wallet = chf("prob_bright_wallet");
+
+//set prob to 1 for lucky crystals and wallets
+if(rand(@id_crystal*2.13)<prob_bright_crystal) prob = 0.999;
+if(rand(@id_wallet*2.14)<prob_bright_wallet) prob = 0.999;
+
+//alternatively additional probabilities based on change_eth amount
+if(@change_eth > 0.1 && @change_eth <= 2.5) prob += 0.02;
+else if(@change_eth > 2.5 && @change_eth <= 10) prob += 0.04;
+else if(@change_eth > 10) prob += 0.12;
+
+prob = clamp(prob,0,1);
+
+//update attributes and change shade_A and/or shade_B
+if(rand(@id_uniq * 2.15) < prob) {
+    i@shade_A_bright = 1;
+//    v@shade_A = lerp(v@shade_A,1,0.7);
+}
+```
+```
+// init special bright attribute to 0
+i@shade_B_bright = 0;
+
+//init the chance of special bright to 0.01%
+float prob = 0.001;
+
+//get global probabilities of special bright color by crystal ID and wallet
+float prob_bright_crystal = chf("prob_bright_crystal");
+float prob_bright_wallet = chf("prob_bright_wallet");
+
+//set prob to 1 for lucky crystals and wallets
+if(rand(@id_crystal*2.131)<prob_bright_crystal) prob = 0.999;
+if(rand(@id_wallet*2.141)<prob_bright_wallet) prob = 0.999;
+
+//alternatively additional probabilities based on change_eth amount
+if(@change_eth > 0.1 && @change_eth <= 2.5) prob += 0.02;
+else if(@change_eth > 2.5 && @change_eth <= 10) prob += 0.04;
+else if(@change_eth > 10) prob += 0.12;
+
+prob = clamp(prob,0,1);
+
+//update attributes and change shade_A and/or shade_B
+if(rand(@id_uniq * 2.151) < prob) {
+    i@shade_B_bright = 1;
+//    v@shade_B = lerp(v@shade_B,1,0.7);
+}
+```
+
 <br>
 
 #### special_dark_A and special_dark_B
 
 The chance of having the Dark trait is set to 0.1% by default. For 2.5% of crystal IDs and 2.5% of wallet IDs, the chance is changed to 99%. For the rest additional chance is added based on the change in ETH amount the wallet holds (only negative change counts) - +5% for - 0.1 to -2.5 ETH, +10% for -2.5 to -10 ETH, and +20% for more than 10 ETH lost. The same process is applied for both primary and secondary colors.
+
+```
+// init special dark attribute to 0
+i@shade_A_dark = 0;
+
+//init the chance of special dark to 0.01%
+float prob = 0.001;
+
+//get global probabilities of special dark color by crystal ID and wallet
+float prob_dark_crystal = chf("prob_dark_crystal");
+float prob_dark_wallet = chf("prob_dark_wallet");
+
+//set prob to 1 for luck crystals and wallets
+if(rand(@id_crystal*3.13)<prob_dark_crystal) prob = 0.999;
+if(rand(@id_wallet*3.14)<prob_dark_wallet) prob = 0.999;
+
+//alternatively additional probabilities based on change_eth amount
+if(@change_eth < -0.1 && @change_eth >= -2.5) prob += 0.05;
+else if(@change_eth < -2.5 && @change_eth >= -10) prob += 0.1;
+else if(@change_eth < -10) prob += 0.2;
+
+prob = clamp(prob,0,1);
+
+//update attributes and change shade_A and/or shade_B
+if(rand(@id_uniq * 3.15) < prob) {
+    i@shade_A_dark = 1;
+//    v@shade_A = lerp(v@shade_A,0,0.8);
+}
+```
+```
+// init special dark attribute to 0
+i@shade_B_dark = 0;
+
+//init the chance of special dark to 0.01%
+float prob = 0.001;
+
+//get global probabilities of special dark color by crystal ID and wallet
+float prob_dark_crystal = chf("prob_dark_crystal");
+float prob_dark_wallet = chf("prob_dark_wallet");
+
+//set prob to 1 for luck crystals and wallets
+if(rand(@id_crystal*3.131)<prob_dark_crystal) prob = 0.999;
+if(rand(@id_wallet*3.141)<prob_dark_wallet) prob = 0.999;
+
+//alternatively additional probabilities based on change_eth amount
+if(@change_eth < -0.1 && @change_eth >= -2.5) prob += 0.05;
+else if(@change_eth < -2.5 && @change_eth >= -10) prob += 0.1;
+else if(@change_eth < -10) prob += 0.2;
+
+prob = clamp(prob,0,1);
+
+//update attributes and change shade_A and/or shade_B
+if(rand(@id_uniq * 3.151) < prob) {
+    i@shade_B_dark = 1;
+//    v@shade_B = lerp(v@shade_B,0,0.8);
+}
+```
 
 <br>
 
@@ -149,11 +424,36 @@ The chance of having the Dark trait is set to 0.1% by default. For 2.5% of cryst
 
 Changes primary and secondary colors to a Bright/Dark version if the part got these traits.
 
+```
+if(i@shade_A_bright == 1) {
+    v@shade_A = lerp(v@shade_A,1,0.7);
+    i@shade_A_dark = 0;
+}    
+else if(i@shade_A_dark == 1) {
+    v@shade_A = lerp(v@shade_A,0,0.8);
+}
+
+
+if(i@shade_B_bright == 1) {
+    v@shade_B = lerp(v@shade_B,1,0.7);
+    i@shade_B_dark = 0;
+}    
+else if(i@shade_B_dark == 1) {
+    v@shade_B = lerp(v@shade_B,0,0.8);
+}    
+```
+
 <br>
 
 #### shade_mix_type
 
 Randomly selects one of 5 possible mixing types that define the pattern used to mix primary and secondary colors on the crystal surface
+
+```
+float seed = @id_uniq*0.3211;
+
+i@shade_mix_type = floor(rand(seed)*10000)%5;
+```
 
 <br>
 

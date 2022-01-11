@@ -1,4 +1,4 @@
-# OG:CR traits generation algortithm and data
+# OG:CR traits generation algorithm and data
 
 OG:CR is a generative art project that consists of 10301 unique 3D crystals generated based on blockchain data. The following text describes how the traits are calculated from the raw data containing transactions list and wallets metadata. 
 

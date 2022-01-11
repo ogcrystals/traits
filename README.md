@@ -1,6 +1,9 @@
 # OG:CR traits generation algortithm and data
 
-OG:CR is a generative art project that consists of 10301 unique 3D crystals generated based on blockchain data. The following text describes how the traits are calculated from the raw data containing transactions list and wallets metadata. The scene file **ogcr_traits_01_02.hip** was created, tested, and intendet to be used in **Houdini 18.5.633**.
+OG:CR is a generative art project that consists of 10301 unique 3D crystals generated based on blockchain data. The following text describes how the traits are calculated from the raw data containing transactions list and wallets metadata. 
+
+* **ogcr_traits_01_02.hip** - the traits scene file  was created, tested, and intendet to be used in **Houdini 18.5.633**. 
+* **json_in_data.zip** - archive contains 10301 json files with all recorded from blockchain metadata needed to calculate each crystal's traits
 
 <br>
 

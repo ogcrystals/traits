@@ -69,7 +69,7 @@ SideFX Houdini: [www.sidefx.com](https://www.sidefx.com/)
 
 <br>
 
-![Algo!](ogcr_algo.png)
+![Algo!](/pic/ogcr_algo.png)
 
 The parts of the algorithm are executed in the order of appearance in the document and each one may override traits set by the previous part. This means that Bright/Dark traits override regular color traits, special materials Obsidian/Gold/Quartz/Pyrite override Bright/Dark, collab-collection traits override special materials, and Dead trait overrides all of them.
 

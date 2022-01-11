@@ -463,6 +463,32 @@ Determines if the part has the Obsidian trait, by default the chance is 0.
 
 For 0.5% of the crystal parts, 1% of crystal IDs, and 1% of wallet IDs the chance is increased by 99.95% - representing “pure” luck and lucky crystals and wallets. An additional chance is added based on the number of NFTs the wallet holds - starting from 2% for 0 NFTs to 0.1% for 100 NFTs and more. Meaning the fewer NFTs the wallet holds the higher chance to get the Obsidian trait.
 
+```
+//generate seeds based on id_uniq, wallet id, and crystal id
+float seed_mat = @id_uniq * 1.5211;
+float seed_wallet = @id_wallet * 1.5212;
+float seed_crystal = @id_crystal * 1.5213;
+
+//get probabilities based on id_uniq, wallet id, and crystal id
+float prob_mat = chf("prob_mat");
+float prob_wallet = chf("prob_wallet");
+float prob_crystal = chf("prob_crystal");
+
+// set material override probability to 0
+float set_mat_prob = 0;
+
+// check 3 probabilities
+if(rand(seed_mat)<prob_mat) set_mat_prob = 0.9995;
+if(rand(seed_wallet)<prob_wallet) set_mat_prob = 0.9995;
+if(rand(seed_crystal)<prob_crystal) set_mat_prob = 0.9995;
+
+
+set_mat_prob += fit(@balance_nft,0,100,0.02,0.001);
+set_mat_prob = clamp(set_mat_prob,0,1);
+
+if( rand(@id_uniq*1.5214) < set_mat_prob ) i@mat_type = 1;
+```
+
 <br>
 
 #### mat_2_gold
@@ -470,6 +496,32 @@ For 0.5% of the crystal parts, 1% of crystal IDs, and 1% of wallet IDs the chanc
 Determines if the part has the Gold trait, by default the chance is 0. 
 
 For 0.5% of the crystal parts, 1% of crystal IDs, and 1% of wallet IDs the chance is increased by 99.95% - representing “pure” luck and lucky crystals and wallets. An additional chance is added based on the amount of ETH the wallet holds - starting from 2% for 0 ETH to 0.1% for 15 ETH and more. Meaning the fewer ETH the wallet holds the higher chance to get the Gold trait.
+
+```
+//generate seeds based on id_uniq, wallet id, and crystal id
+float seed_mat = @id_uniq * 2.5211;
+float seed_wallet = @id_wallet * 2.5212;
+float seed_crystal = @id_crystal * 2.5213;
+
+//get probabilities based on id_uniq, wallet id, and crystal id
+float prob_mat = chf("prob_mat");
+float prob_wallet = chf("prob_wallet");
+float prob_crystal = chf("prob_crystal");
+
+// set material override probability to 0
+float set_mat_prob = 0;
+
+// check 3 probabilities
+if(rand(seed_mat)<prob_mat) set_mat_prob = 0.9995;
+if(rand(seed_wallet)<prob_wallet) set_mat_prob = 0.9995;
+if(rand(seed_crystal)<prob_crystal) set_mat_prob = 0.9995;
+
+
+set_mat_prob += fit(@balance_eth,0,15,0.02,0.001);
+set_mat_prob = clamp(set_mat_prob,0,1);
+
+if( rand(@id_uniq*2.5214) < set_mat_prob ) i@mat_type = 2;
+```
 
 <br>
 
@@ -479,13 +531,65 @@ Determines if the part has the Quartz trait, by default the chance is 0.
 
 For 1% of the crystal parts, 1% of crystal IDs, and 1% of wallet IDs the chance is increased by 99.95% - representing “pure” luck and lucky crystals and wallets. An additional chance is added based on the number of NFTs the wallet holds - starting from 2% for 100 NFTs to 0.1% for 0 NFTs. Meaning the more NFTs the wallet holds the higher chance to get the Quartz trait.
 
+```
+//generate seeds based on id_uniq, wallet id, and crystal id
+float seed_mat = @id_uniq * 3.5211;
+float seed_wallet = @id_wallet * 3.5212;
+float seed_crystal = @id_crystal * 3.5213;
+
+//get probabilities based on id_uniq, wallet id, and crystal id
+float prob_mat = chf("prob_mat");
+float prob_wallet = chf("prob_wallet");
+float prob_crystal = chf("prob_crystal");
+
+// set material override probability to 0
+float set_mat_prob = 0;
+
+// check 3 probabilities
+if(rand(seed_mat)<prob_mat) set_mat_prob = 0.9995;
+if(rand(seed_wallet)<prob_wallet) set_mat_prob = 0.9995;
+if(rand(seed_crystal)<prob_crystal) set_mat_prob = 0.9995;
+
+
+set_mat_prob += fit(@balance_nft,100,0,0.02,0.001);
+set_mat_prob = clamp(set_mat_prob,0,1);
+
+if( rand(@id_uniq*3.5214) < set_mat_prob ) i@mat_type = 3;
+```
+
 <br>
 
 #### mat_4_pyrite
 
 Determines if the part has the Pyrite trait, by default the chance is 0. 
 
-For1% of the crystal parts, 1% of crystal IDs, and 1% of wallet IDs the chance is increased by 99.95% - representing “pure” luck and lucky crystals and wallets. An additional chance is added based on the amount of ETH the wallet holds - starting from 2% for 15 ETH to 0.1% for 0 ETH. Meaning the more ETH the wallet holds the higher chance to get the Pyrite trait.
+For 1% of the crystal parts, 1% of crystal IDs, and 1% of wallet IDs the chance is increased by 99.95% - representing “pure” luck and lucky crystals and wallets. An additional chance is added based on the amount of ETH the wallet holds - starting from 2% for 15 ETH to 0.1% for 0 ETH. Meaning the more ETH the wallet holds the higher chance to get the Pyrite trait.
+
+```
+//generate seeds based on id_uniq, wallet id, and crystal id
+float seed_mat = @id_uniq * 4.5211;
+float seed_wallet = @id_wallet * 4.5212;
+float seed_crystal = @id_crystal * 4.5213;
+
+//get probabilities based on id_uniq, wallet id, and crystal id
+float prob_mat = chf("prob_mat");
+float prob_wallet = chf("prob_wallet");
+float prob_crystal = chf("prob_crystal");
+
+// set material override probability to 0
+float set_mat_prob = 0;
+
+// check 3 probabilities
+if(rand(seed_mat)<prob_mat) set_mat_prob = 0.9995;
+if(rand(seed_wallet)<prob_wallet) set_mat_prob = 0.9995;
+if(rand(seed_crystal)<prob_crystal) set_mat_prob = 0.9995;
+
+
+set_mat_prob += fit(@balance_eth,15,0,0.02,0.001);
+set_mat_prob = clamp(set_mat_prob,0,1);
+
+if( rand(@id_uniq*4.5214) < set_mat_prob ) i@mat_type = 4;
+```
 
 <br>
 
@@ -493,11 +597,64 @@ For1% of the crystal parts, 1% of crystal IDs, and 1% of wallet IDs the chance i
 
 If the wallet holds any NFTs from the 7 supported collab-collections there is a 33% chance to get a special collab trait. If the wallet has NFTs from more than one supported collection the collab trait is selected randomly between the present collections. Meaning if the wallet has only one supported collection there is a 33% chance to get this collab trait. If the wallet has NFTs from 2 collections there is a 33/2=16.5% chance of getting each of two, etc.
 
+```
+i[]@list_type;
+i[]@list_mat;
+
+int check_1 = find(s@collection_name,"/ksoids/");
+int check_2 = find(s@collection_name,"/boredApes/");
+int check_3 = find(s@collection_name,"/meebits/");
+int check_4 = find(s@collection_name,"/omnimorphs/");
+int check_5 = find(s@collection_name,"/89seconds/");
+int check_6 = find(s@collection_name,"/artBlocks/");
+int check_7 = find(s@collection_name,"/cryptoPunks/");
+
+if(check_1 >= 0) { push(@list_type, 6); push(@list_mat, 101);}
+if(check_2 >= 0) { push(@list_type, 7); push(@list_mat, 102);}
+if(check_3 >= 0) { push(@list_type, 8); push(@list_mat, 103);}
+if(check_4 >= 0) { push(@list_type, 9); push(@list_mat, 104);}
+if(check_5 >= 0) { push(@list_type, 10); push(@list_mat, 105);}
+if(check_6 >= 0) { push(@list_type, 11); push(@list_mat, 106);}
+if(check_7 >= 0) { push(@list_type, 12); push(@list_mat, 107);}
+
+i@type_special = 0;
+
+float spec_prob = chf("prob");
+
+if(rand( @id_uniq*184.222)<spec_prob && len(@list_type)>0 ) {
+    int max = len(@list_type);
+    int collection = floor(rand(@id_uniq*185.222)*10000)%max;
+    
+    i@type_special = 1;
+    @type = @list_type[collection];
+    @mat_type = @list_mat[collection];
+} 
+```
+
 <br>
 
 #### dead
 
 If the crystal was sold below the current floor price there is a chance of getting Dead trait - from 0% for selling 15% lower than the floor price to 99% for selling 85% lower than the floor.
+
+```
+int dead = 0;
+
+if(@price < @floor) {
+    float d = (@floor - @price) / @floor;
+    
+    d = fit(d, 0.15, 0.85, 0, 1);
+    d = chramp("ramp", d);
+ 
+    if(rand(@id_uniq*13.13)<d) dead = 1;
+}
+
+if(dead==1) {
+    i@type_special = 1;
+    i@type = 13;
+    i@mat_type = 201;
+}
+```
 
 <br><br>
 

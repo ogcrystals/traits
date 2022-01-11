@@ -79,7 +79,7 @@ The parts of the algorithm are executed in the order of appearance in the docume
 
 Generate a unique ID for the crystal part based on Crystal ID, Block Number, Wallet Address, Timestamp.
 
-`
+```
 //generate uniq ID for the crystal part based on Crystal ID, 
 //Block Number, Wallet Address, Timestamp
 
@@ -87,7 +87,7 @@ Generate a unique ID for the crystal part based on Crystal ID, Block Number, Wal
 @id_uniq += floor(rand(@id_block*0.3)*100000); 
 @id_uniq += floor(rand(@id_wallet*0.4)*100000);
 @id_uniq += floor(rand(@timestamp*0.5)*100000);
-`
+```
 
 <br>
 
